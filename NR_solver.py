@@ -8,22 +8,22 @@ import numpy as np
 def equations(vars):
     theta2, theta3, theta4, theta5, V3, V5 = vars
 
-    f1 = (-1.32685 - 7.2869e-4 * aunp.cos(theta2) + 4.857762 * aunp.sin(theta2) - 1.821e-4 * V3 * aunp.cos(theta2 - theta3) +
-          1.821 * V3 * aunp.sin(theta2 - theta3) - 4.102e-4 * aunp.cos(theta2 - theta4) + 1.823 * aunp.sin(theta2 - theta4) -
-          1.748e-4 * V5 * aunp.cos(theta2 - theta5) + 4.033 * V5 * aunp.sin(theta2 - theta5))
+    f1 = (-1.327 - 7.2869e-4 * aunp.cos(theta2) + 4.8578 * aunp.sin(theta2) - 1.821e-4 * V3 * aunp.cos(theta2 - theta3) +
+          1.821 * V3 * aunp.sin(theta2 - theta3) - 4.1053e-4 * aunp.cos(theta2 - theta4) + 1.824 * aunp.sin(theta2 - theta4) -
+          1.748e-3 * V5 * aunp.cos(theta2 - theta5) + 4.033 * V5 * aunp.sin(theta2 - theta5))
 
-    f2 = (1.5 + 2.6464e-3 * V3 ** 2 - 1.809e-4 * V3 * aunp.cos(theta3) + 2.0679e-4 * V3 * aunp.sin(theta3) -
+    f2 = (1.5 + 2.6464e-3 * V3 ** 2 - 1.809e-4 * V3 * aunp.cos(theta3) + 2.067 * V3 * aunp.sin(theta3) -
           1.821e-4 * V3 * aunp.cos(theta3 - theta2) + 1.821 * V3 * aunp.sin(theta3 - theta2) -
-          2.345e-4 * V3 * aunp.cos(theta3 - theta4) + 6.171 * V3 * aunp.sin(theta3 - theta4))
+          2.345e-3 * V3 * aunp.cos(theta3 - theta4) + 6.171 * V3 * aunp.sin(theta3 - theta4))
 
-    f3 = (0.133 - 4.102e-4 * aunp.cos(theta4 - theta2) + 1.823 * aunp.sin(theta4 - theta2) -
-          2.345e-4 * V3 * aunp.cos(theta4 - theta3) + 6.171 * V3 * aunp.sin(theta4 - theta3) -
+    f3 = (0.133 - 4.102e-4 * aunp.cos(theta4 - theta2) + 1.824 * aunp.sin(theta4 - theta2) -
+          2.345e-3 * V3 * aunp.cos(theta4 - theta3) + 6.171 * V3 * aunp.sin(theta4 - theta3) -
           1.799e-4 * V5 * aunp.cos(theta4 - theta5) + 1.574 * V5 * aunp.sin(theta4 - theta5))
 
     f4 = (1.3 + 1.857e-3 * V5 ** 2 - 1.748e-3 * V5 * aunp.cos(theta5 - theta2) + 4.033 * V5 * aunp.sin(theta5 - theta2) -
           1.799e-4 * V5 * aunp.sin(theta5 - theta4) + 1.574 * V5 * aunp.sin(theta5 - theta4))
 
-    f5 = (0.5 + 9.695 * V3 ** 2 - 1.819e-4 * V3 * aunp.sin(theta3) - 2.068 * V3 * aunp.cos(theta3) -
+    f5 = (0.5 + 9.695 * V3 ** 2 - 1.809e-4 * V3 * aunp.sin(theta3) - 2.067 * V3 * aunp.cos(theta3) -
           1.821e-4 * V3 * aunp.sin(theta3 - theta2) - 1.821 * V3 * aunp.cos(theta3 - theta2) -
           2.345e-3 * aunp.sin(theta3 - theta4) - 6.171 * V3 * aunp.cos(theta3 - theta4))
 
@@ -170,14 +170,13 @@ def multivariable_newton_raphson(initial_vars, tolerance=1e-8, max_iter=200):
 
         # Check for convergence
         if aunp.max(aunp.abs(vars_next - vars_current)) < tolerance:
-            print(f"Converged in {iteration + 1} iterations")
-            return vars_next
+            return vars_next, iteration + 1
 
         vars_current = vars_next
         iteration += 1
 
     print("Did not converge")
-    return vars_current
+    return vars_current, iteration + 1
 
 
 def ybusmatrix_gen(bus_data, line_data, base_impedance):
@@ -248,11 +247,13 @@ thet1 = 0.0
 V = [v1, v2, v4]
 theta = [thet1]
 
-print(jacobian_matrix(initial_vars))
+unknown = ['theta2', 'theta3', 'theta4', 'theta5', 'V3', 'V5']
 
 # Compute using Newton-Raphson method
-result = multivariable_newton_raphson(initial_vars)
-print("Result:", result)
+result, iterate = multivariable_newton_raphson(initial_vars)
+print(f'\nResult converges at iteration {iterate}:')
+for i in range(len(result)):
+    print(f'{unknown[i]} = {result[i]}')
 
 result_V = []
 result_theta = []
@@ -269,5 +270,8 @@ V.extend(result_V)
 theta.extend(result_theta)
 
 power = calculate_power(V, theta)
+unknown_power = ['P1', 'P2', 'P3', 'P4', 'P5', 'Q1', 'Q2', 'Q3', 'Q4', 'Q5']
 
-print("Power(P,Q):", power)
+print("\nResulted Power:")
+for i in range(len(power)):
+    print(f'{unknown_power[i]} = {power[i]}')
