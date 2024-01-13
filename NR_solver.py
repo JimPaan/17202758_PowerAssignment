@@ -103,28 +103,6 @@ def calculate_power(V, theta):
     return aunp.array([P1, P2, P3, P4, P5, Q1, Q2, Q3, Q4, Q5])
 
 
-def equation_fd(vars):
-    theta2, theta3, theta4, theta5, V3, V5 = vars
-
-    f1 = (-1.33 + 4.8578 * aunp.sin(theta2) + 1.821 * V3 * aunp.sin(theta2 - theta3) +
-          1.824 * aunp.sin(theta2 - theta4) + 4.033 * V5 * aunp.sin(theta2 - theta5))
-
-    f2 = (1.5 + 2.067 * V3 * aunp.sin(theta3) + 1.821 * V3 * aunp.sin(theta3 - theta2) +
-          6.171 * V3 * aunp.sin(theta3 - theta4))
-
-    f3 = (0.13 + 1.824 * aunp.sin(theta4 - theta2) + 6.171 * V3 * aunp.sin(theta4 - theta3) +
-          1.574 * V5 * aunp.sin(theta4 - theta5))
-
-    f4 = (1.3 + 4.033 * V5 * aunp.sin(theta5 - theta2) + 1.574 * V5 * aunp.sin(theta5 - theta4))
-
-    f5 = (0.5 - 2.067 * V3 * aunp.cos(theta3) - 1.821 * V3 * aunp.cos(theta3 - theta2)
-          - 6.171 * V3 * aunp.cos(theta3 - theta4))
-
-    f6 = (0.4 - 4.033 * V5 * aunp.cos(theta5 - theta2) - 1.574 * V5 * aunp.cos(theta5 - theta4))
-
-    return aunp.array([f1, f2, f3, f4, f5, f6])
-
-
 def jacobian_matrix(vars):
     return jacobian(equations)(vars)
 
