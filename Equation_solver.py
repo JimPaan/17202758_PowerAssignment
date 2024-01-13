@@ -49,8 +49,8 @@ for line in line_data:
     Y_matrix[to_bus][from_bus] -= Y
 
     # Diagonal elements
-    Y_matrix[from_bus][from_bus] += Y + B
-    Y_matrix[to_bus][to_bus] += Y + B
+    Y_matrix[from_bus][from_bus] += Y + B/2
+    Y_matrix[to_bus][to_bus] += Y + B/2
 
 # Display the Y matrix
 print("Y matrix:")
